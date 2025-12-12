@@ -876,16 +876,29 @@
         }
 
         function addCriteriaToOption(option) {
-            const input = document.querySelector('#criteria-input-' + option.replace(/\\s+/g, '_'));
-            const value = input.value.trim();
-            if (value && !criteria.find(c => c.name === value)) {
-                criteria.push({ name: value, direction: 'higher' });
-                input.value = '';
-                initializeScores();
-                renderOptions();
-                calculateScores();
-            }
-        }
+    const input = document.querySelector('#criteria-input-' + option.replace(/\s+/g, '_'));
+    if (!input) {
+        console.warn('Criteria input not found for option:', option);
+        return;
+    }
+
+    const raw = input.value.trim();
+    if (!raw) return;
+
+    // Case-insensitive duplicate check
+    const name = raw;
+    if (criteria.find(c => c.name.toLowerCase() === name.toLowerCase())) {
+        input.value = '';
+        return;
+    }
+
+    criteria.push({ name, direction: 'higher' });
+    input.value = '';
+    initializeScores();
+    renderOptions();
+    calculateScores();
+}
+
 
         function deleteCriteriaFromOption(criterionName) {
             if (criteria.length > 1) {
